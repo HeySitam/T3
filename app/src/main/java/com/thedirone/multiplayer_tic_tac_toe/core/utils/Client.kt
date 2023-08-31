@@ -1,5 +1,6 @@
 package com.thedirone.multiplayer_tic_tac_toe.core.utils
 
+import android.util.Log
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.DataInputStream
@@ -21,9 +22,9 @@ class Client(val ipAddr:String) : Runnable {
     override fun run() {
         // create a server socket
         try {
-            socket = Socket(ipAddr,12345)
+            socket = Socket(ipAddr,5000)
         } catch (e: IOException) {
-            println("failed to start client socket")
+            Log.d("ClientTesting", "failed to start client socket")
             e.printStackTrace()
         }
 
@@ -38,20 +39,32 @@ class Client(val ipAddr:String) : Runnable {
 //        println("client connected")
 
         // create input and output streams
+        Log.d("ClientTesting", "creating data streams...")
         try {
             dataInputStream = DataInputStream(BufferedInputStream(socket!!.getInputStream()))
             dataOutputStream = DataOutputStream(BufferedOutputStream(socket!!.getOutputStream()))
         } catch (e: IOException) {
-            println("failed to create streams")
+            Log.d("ClientTesting", "failed to create streams")
+            e.printStackTrace()
+        }
+
+        // reading data from server
+        Log.d("ClientTesting", "reading data from server...")
+        try {
+            val data = dataInputStream!!.readInt()
+            Log.d("ClientTesting", "$data received from server")
+        } catch (e: IOException) {
+            Log.d("ClientTesting", "failed to send")
             e.printStackTrace()
         }
 
         // send some test data
+        Log.d("ClientTesting", "sending test data...")
         try {
             dataOutputStream!!.writeInt(6789)
             dataOutputStream!!.flush()
         } catch (e: IOException) {
-            println("failed to send")
+            Log.d("ClientTesting", "failed to send")
             e.printStackTrace()
         }
 
