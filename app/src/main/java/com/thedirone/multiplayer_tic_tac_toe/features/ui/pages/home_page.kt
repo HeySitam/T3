@@ -1,4 +1,4 @@
-package com.thedirone.multiplayer_tic_tac_toe.ui.pages
+package com.thedirone.multiplayer_tic_tac_toe.features.ui.pages
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

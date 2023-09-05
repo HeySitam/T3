@@ -1,4 +1,4 @@
-package com.thedirone.multiplayer_tic_tac_toe.ui.theme
+package com.thedirone.multiplayer_tic_tac_toe.features.ui.theme
 
 import android.app.Activity
 import android.os.Build

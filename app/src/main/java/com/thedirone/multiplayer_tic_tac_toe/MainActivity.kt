@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.format.Formatter
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -15,10 +16,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.thedirone.multiplayer_tic_tac_toe.core.routes.Route
-import com.thedirone.multiplayer_tic_tac_toe.ui.pages.ClientPageScreen
-import com.thedirone.multiplayer_tic_tac_toe.ui.pages.HomePageScreen
-import com.thedirone.multiplayer_tic_tac_toe.ui.pages.ServerPageScreen
-import com.thedirone.multiplayer_tic_tac_toe.ui.theme.MultiplayerTicTacToeTheme
+import com.thedirone.multiplayer_tic_tac_toe.features.ui.pages.ClientPageScreen
+import com.thedirone.multiplayer_tic_tac_toe.features.ui.pages.HomePageScreen
+import com.thedirone.multiplayer_tic_tac_toe.features.ui.pages.ServerPageScreen
+import com.thedirone.multiplayer_tic_tac_toe.features.ui.theme.MultiplayerTicTacToeTheme
+import com.thedirone.multiplayer_tic_tac_toe.features.viewmodels.ClientViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
