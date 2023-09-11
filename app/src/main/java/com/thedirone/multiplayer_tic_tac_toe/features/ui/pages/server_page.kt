@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.thedirone.multiplayer_tic_tac_toe.core.utils.Server
 import com.thedirone.multiplayer_tic_tac_toe.core.utils.Vertically
+import com.thedirone.multiplayer_tic_tac_toe.features.ui.widgets.GameBoard
 import com.thedirone.multiplayer_tic_tac_toe.features.viewmodels.ServerViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,8 +33,6 @@ fun ServerPageScreen() {
     remember {
         serverVM.apply {
             startServer()
-//           sendData(1234)
-//           receiveData()
         }
         null
     }
@@ -60,4 +59,5 @@ fun ServerPageScreen() {
         16.Vertically()
         Text(text = "${statusMsgState.value}")
     }
+  //  GameBoard()
 }

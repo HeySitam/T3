@@ -33,8 +33,6 @@ fun ClientPageScreen() {
     remember {
         clientViewModel.apply {
             connectToServer(ipAddr = "192.168.0.145")
-//            receiveData()
-//            sendData(5462)
         }
         null
     }
