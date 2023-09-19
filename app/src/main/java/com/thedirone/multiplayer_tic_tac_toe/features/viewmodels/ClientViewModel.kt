@@ -13,6 +13,8 @@ import java.io.BufferedOutputStream
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 import java.net.Socket
 
 class ClientViewModel : ViewModel() {
@@ -25,11 +27,13 @@ class ClientViewModel : ViewModel() {
     private var socket: Socket? = null
     private var dataInputStream: DataInputStream? = null
     private var dataOutputStream: DataOutputStream? = null
+//    private var dataInputStream: ObjectInputStream? = null
+//    private var dataOutputStream: ObjectOutputStream? = null
 
     fun connectToServer(ipAddr: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                socket = Socket(ipAddr, 5000)
+                socket = Socket(ipAddr, 2345)
             } catch (e: IOException) {
                 Log.d("ClientTesting", "failed to start client socket")
                 withContext(Dispatchers.Main){
@@ -46,6 +50,10 @@ class ClientViewModel : ViewModel() {
                 dataInputStream = DataInputStream(BufferedInputStream(socket!!.getInputStream()))
                 dataOutputStream =
                     DataOutputStream(BufferedOutputStream(socket!!.getOutputStream()))
+//                dataInputStream = ObjectInputStream(socket!!.getInputStream())
+//                dataOutputStream =
+//                    ObjectOutputStream(socket!!.getOutputStream())
+//                dataOutputStream!!.flush()
             } catch (e: IOException) {
                 Log.d("ClientTesting", "failed to create streams")
                 withContext(Dispatchers.Main){
@@ -59,12 +67,15 @@ class ClientViewModel : ViewModel() {
 
             try {
                 while(true) {
-                    val test = dataInputStream!!.readInt()
-                    Log.d("ClientTesting", "byte received: $test")
-                    withContext(Dispatchers.Main){
-                        _receivedDataFromServer.value = test
-                    }
-                }
+                      val pos = dataInputStream!!.readInt()
+                      val data = dataInputStream!!.readInt()
+                    Log.d("ClientReceived", "Position is ${pos.toString()}")
+                    Log.d("ClientReceived", "data is ${data.toString()}")
+//                    Log.d("ClientTesting", "byte received: $test")
+//                    withContext(Dispatchers.Main){
+//                        _receivedDataFromServer.value = test
+//                    }
+               }
             } catch (e: IOException) {
                 e.printStackTrace()
             }

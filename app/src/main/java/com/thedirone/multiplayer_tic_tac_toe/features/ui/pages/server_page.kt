@@ -52,7 +52,12 @@ fun ServerPageScreen() {
         )
         16.Vertically()
         ElevatedButton(onClick = {
-            serverVM.sendData(text.toInt())
+            //serverVM.sendData(text.toInt())
+            serverVM.sendDataWithPosition(pos = 5, data = 4)
+            serverVM.sendDataWithPosition(pos = 1, data = 2)
+            serverVM.sendDataWithPosition(pos = 3, data = 4)
+            serverVM.sendDataWithPosition(pos = 2, data = 9)
+            serverVM.sendDataWithPosition(pos = 0, data = 1)
         }) {
             Text("Send to Client")
         }

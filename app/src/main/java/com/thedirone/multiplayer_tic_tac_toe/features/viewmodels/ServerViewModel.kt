@@ -13,6 +13,8 @@ import java.io.BufferedOutputStream
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 import java.net.ServerSocket
 import java.net.Socket
 
@@ -27,11 +29,12 @@ class ServerViewModel : ViewModel() {
     private var socket: Socket? = null
     private var dataInputStream: DataInputStream? = null
     private var dataOutputStream: DataOutputStream? = null
-
+//    private var dataInputStream: ObjectInputStream? = null
+//    private var dataOutputStream: ObjectOutputStream? = null
     fun startServer() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                serverSocket = ServerSocket(5000)
+                serverSocket = ServerSocket(2345)
             } catch (e: IOException) {
                 Log.d("ServerTesting", "failed to start server socket")
                 withContext(Dispatchers.Main){
@@ -64,6 +67,10 @@ class ServerViewModel : ViewModel() {
                 dataInputStream = DataInputStream(BufferedInputStream(socket!!.getInputStream()))
                 dataOutputStream =
                     DataOutputStream(BufferedOutputStream(socket!!.getOutputStream()))
+//                dataInputStream = ObjectInputStream(socket!!.getInputStream())
+//                dataOutputStream =
+//                    ObjectOutputStream(socket!!.getOutputStream())
+//                dataOutputStream!!.flush()
             } catch (e: IOException) {
                 Log.d("ServerTesting", "failed to create streams")
                 withContext(Dispatchers.Main){
@@ -90,6 +97,19 @@ class ServerViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 dataOutputStream!!.writeInt(dataToSend)
+                dataOutputStream!!.flush()
+            } catch (e: IOException) {
+                Log.d("ServerTesting", "failed to send: ${e.message}")
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun sendDataWithPosition(pos:Int, data:Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                dataOutputStream!!.writeInt(pos)
+                dataOutputStream!!.writeInt(data)
                 dataOutputStream!!.flush()
             } catch (e: IOException) {
                 Log.d("ServerTesting", "failed to send: ${e.message}")
