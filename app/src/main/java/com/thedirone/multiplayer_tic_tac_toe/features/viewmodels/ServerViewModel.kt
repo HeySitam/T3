@@ -25,6 +25,8 @@ class ServerViewModel : ViewModel() {
     private val _serverStatus = MutableLiveData<String>()
     val serverStatus: LiveData<String> = _serverStatus
 
+    private val gameArr = IntArray(9)
+
     private var serverSocket: ServerSocket? = null
     private var socket: Socket? = null
     private var dataInputStream: DataInputStream? = null

@@ -24,6 +24,8 @@ class ClientViewModel : ViewModel() {
     private val _clientStatus = MutableLiveData<String>()
     val clientStatus: LiveData<String> = _clientStatus
 
+    private val gameArr = IntArray(9)
+
     private var socket: Socket? = null
     private var dataInputStream: DataInputStream? = null
     private var dataOutputStream: DataOutputStream? = null
