@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.thedirone.multiplayer_tic_tac_toe.core.utils.returnCopiedIntArr
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -17,6 +18,9 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.net.Socket
 
+// For now Client is for O
+// X => 1
+// O => 2
 class ClientViewModel : ViewModel() {
     private val _receivedDataFromServer = MutableLiveData<Int>()
     val receivedDataFromServer: LiveData<Int> = _receivedDataFromServer
@@ -24,13 +28,14 @@ class ClientViewModel : ViewModel() {
     private val _clientStatus = MutableLiveData<String>()
     val clientStatus: LiveData<String> = _clientStatus
 
+    private val _gameArrayInfo = MutableLiveData<IntArray>()
+    val gameArrayInfo: LiveData<IntArray> = _gameArrayInfo
+
     private val gameArr = IntArray(9)
 
     private var socket: Socket? = null
     private var dataInputStream: DataInputStream? = null
     private var dataOutputStream: DataOutputStream? = null
-//    private var dataInputStream: ObjectInputStream? = null
-//    private var dataOutputStream: ObjectOutputStream? = null
 
     fun connectToServer(ipAddr: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -52,10 +57,6 @@ class ClientViewModel : ViewModel() {
                 dataInputStream = DataInputStream(BufferedInputStream(socket!!.getInputStream()))
                 dataOutputStream =
                     DataOutputStream(BufferedOutputStream(socket!!.getOutputStream()))
-//                dataInputStream = ObjectInputStream(socket!!.getInputStream())
-//                dataOutputStream =
-//                    ObjectOutputStream(socket!!.getOutputStream())
-//                dataOutputStream!!.flush()
             } catch (e: IOException) {
                 Log.d("ClientTesting", "failed to create streams")
                 withContext(Dispatchers.Main){
@@ -73,10 +74,13 @@ class ClientViewModel : ViewModel() {
                       val data = dataInputStream!!.readInt()
                     Log.d("ClientReceived", "Position is ${pos.toString()}")
                     Log.d("ClientReceived", "data is ${data.toString()}")
-//                    Log.d("ClientTesting", "byte received: $test")
-//                    withContext(Dispatchers.Main){
-//                        _receivedDataFromServer.value = test
-//                    }
+                    withContext(Dispatchers.Main) {
+                        if(gameArr[pos] == 0){
+                             gameArr[pos] = data
+                            _gameArrayInfo.value = returnCopiedIntArr(gameArr)
+                        }
+                    }
+                    Log.d("ClientReceived", "game array is ${gameArr.toList()}")
                }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -84,29 +88,23 @@ class ClientViewModel : ViewModel() {
         }
     }
 
-    fun sendData(dataToSend: Int) {
+    fun sendDataWithPositionToServer(pos:Int, data:Int = 2) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("ClientTesting", "sending test data...")
             try {
-                dataOutputStream!!.writeInt(dataToSend)
+                withContext(Dispatchers.Main) {
+                    if(gameArr[pos] == 0){
+                         gameArr[pos] = data
+                        _gameArrayInfo.value = returnCopiedIntArr(gameArr)
+                    }
+                }
+                dataOutputStream!!.writeInt(pos)
+                dataOutputStream!!.writeInt(data)
                 dataOutputStream!!.flush()
             } catch (e: IOException) {
-                Log.d("ClientTesting", "failed to send")
+                Log.d("ServerTesting", "failed to send: ${e.message}")
                 e.printStackTrace()
             }
         }
     }
 
-    fun receiveData() {
-        viewModelScope.launch(Dispatchers.IO) {
-            Log.d("ClientTesting", "reading data from server...")
-            try {
-                val data = dataInputStream!!.readInt()
-                Log.d("ClientTesting", "$data received from server")
-            } catch (e: IOException) {
-                Log.d("ClientTesting", "failed to send")
-                e.printStackTrace()
-            }
-        }
-    }
 }

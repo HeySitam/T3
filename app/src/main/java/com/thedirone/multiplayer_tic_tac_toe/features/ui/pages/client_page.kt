@@ -1,5 +1,6 @@
 package com.thedirone.multiplayer_tic_tac_toe.features.ui.pages
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.thedirone.multiplayer_tic_tac_toe.core.utils.Client
 import com.thedirone.multiplayer_tic_tac_toe.core.utils.Vertically
 import com.thedirone.multiplayer_tic_tac_toe.features.ui.widgets.DummyBoxGrid
+import com.thedirone.multiplayer_tic_tac_toe.features.ui.widgets.GameBoard
 import com.thedirone.multiplayer_tic_tac_toe.features.viewmodels.ClientViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,6 +31,7 @@ fun ClientPageScreen() {
     val clientViewModel: ClientViewModel = viewModel()
     val statusMsgState = clientViewModel.clientStatus.observeAsState()
     val receivedDataFromServer = clientViewModel.receivedDataFromServer.observeAsState()
+    val gameArray = clientViewModel.gameArrayInfo.observeAsState()
     var text by rememberSaveable { mutableStateOf("Text from client") }
     remember {
         clientViewModel.apply {
@@ -36,29 +39,33 @@ fun ClientPageScreen() {
         }
         null
     }
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-
-    ) {
-        Text(text = "${receivedDataFromServer.value}")
-        16.Vertically()
-        TextField(
-            value = text,
-            onValueChange = {
-                text = it
-            },
-            label = { Text("Client") }
-        )
-        16.Vertically()
-        ElevatedButton(onClick = {
-            clientViewModel.sendData(text.toInt())
-        }) {
-            Text("Send to Server")
-        }
-        16.Vertically()
-        Text(text = "${statusMsgState.value}")
-        // DummyBoxGrid()
+//    Column(
+//        modifier = Modifier.fillMaxSize(),
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally
+//
+//    ) {
+//        Text(text = "${receivedDataFromServer.value}")
+//        16.Vertically()
+//        TextField(
+//            value = text,
+//            onValueChange = {
+//                text = it
+//            },
+//            label = { Text("Client") }
+//        )
+//        16.Vertically()
+//        ElevatedButton(onClick = {
+//           // clientViewModel.sendData(text.toInt())
+//        }) {
+//            Text("Send to Server")
+//        }
+//        16.Vertically()
+//        Text(text = "${statusMsgState.value}")
+//        // DummyBoxGrid()
+//    }
+    GameBoard(gameArr = gameArray.value ?: IntArray(9), statusMsg = statusMsgState.value){pos ->
+        clientViewModel.sendDataWithPositionToServer(pos = pos)
+        Log.d("SelectedPos", pos.toString())
     }
 }

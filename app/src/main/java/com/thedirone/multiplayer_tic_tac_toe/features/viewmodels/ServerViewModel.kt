@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.thedirone.multiplayer_tic_tac_toe.core.utils.returnCopiedIntArr
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -18,6 +19,9 @@ import java.io.ObjectOutputStream
 import java.net.ServerSocket
 import java.net.Socket
 
+// For now Server is for X
+// X => 1
+// O => 2
 class ServerViewModel : ViewModel() {
     private val _receivedDataFromClient = MutableLiveData<Int>()
     val receivedDataFromClient: LiveData<Int> = _receivedDataFromClient
@@ -25,14 +29,15 @@ class ServerViewModel : ViewModel() {
     private val _serverStatus = MutableLiveData<String>()
     val serverStatus: LiveData<String> = _serverStatus
 
+    private val _gameArrayInfo = MutableLiveData<IntArray>()
+    val gameArrayInfo: LiveData<IntArray> = _gameArrayInfo
+
     private val gameArr = IntArray(9)
 
     private var serverSocket: ServerSocket? = null
     private var socket: Socket? = null
     private var dataInputStream: DataInputStream? = null
     private var dataOutputStream: DataOutputStream? = null
-//    private var dataInputStream: ObjectInputStream? = null
-//    private var dataOutputStream: ObjectOutputStream? = null
     fun startServer() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -69,10 +74,6 @@ class ServerViewModel : ViewModel() {
                 dataInputStream = DataInputStream(BufferedInputStream(socket!!.getInputStream()))
                 dataOutputStream =
                     DataOutputStream(BufferedOutputStream(socket!!.getOutputStream()))
-//                dataInputStream = ObjectInputStream(socket!!.getInputStream())
-//                dataOutputStream =
-//                    ObjectOutputStream(socket!!.getOutputStream())
-//                dataOutputStream!!.flush()
             } catch (e: IOException) {
                 Log.d("ServerTesting", "failed to create streams")
                 withContext(Dispatchers.Main){
@@ -83,11 +84,20 @@ class ServerViewModel : ViewModel() {
 
             try {
                 while(true) {
-                    val test = dataInputStream!!.readInt()
-                    Log.d("ServerTesting", "byte received: $test")
-                    withContext(Dispatchers.Main){
-                        _receivedDataFromClient.value = test
+                    val pos = dataInputStream!!.readInt()
+                    val data = dataInputStream!!.readInt()
+                    Log.d("ServerReceived", "Position is ${pos.toString()}")
+                    Log.d("ServerReceived", "data is ${data.toString()}")
+                   // gameArr[pos] = data
+                    withContext(Dispatchers.Main) {
+                        if(gameArr[pos] == 0){
+                            gameArr[pos] = data
+                            _gameArrayInfo.value = returnCopiedIntArr(gameArr)
+                        }
                     }
+//                    withContext(Dispatchers.Main){
+//                        _receivedDataFromClient.value = test
+//                    }
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -95,21 +105,15 @@ class ServerViewModel : ViewModel() {
         }
     }
 
-    fun sendData(dataToSend: Int) {
+    fun sendDataWithPositionToClient(pos:Int, data:Int = 1) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                dataOutputStream!!.writeInt(dataToSend)
-                dataOutputStream!!.flush()
-            } catch (e: IOException) {
-                Log.d("ServerTesting", "failed to send: ${e.message}")
-                e.printStackTrace()
-            }
-        }
-    }
-
-    fun sendDataWithPosition(pos:Int, data:Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
+                withContext(Dispatchers.Main) {
+                    if(gameArr[pos] == 0){
+                         gameArr[pos] = data
+                        _gameArrayInfo.value = returnCopiedIntArr(gameArr)
+                    }
+                }
                 dataOutputStream!!.writeInt(pos)
                 dataOutputStream!!.writeInt(data)
                 dataOutputStream!!.flush()
@@ -118,19 +122,6 @@ class ServerViewModel : ViewModel() {
                 e.printStackTrace()
             }
         }
-    }
-
-    fun receiveData() {
-       // viewModelScope.launch(Dispatchers.IO) {
-            try {
-                while(true) {
-                    val test = dataInputStream!!.readUTF()
-                    Log.d("ServerTesting", "byte received: $test")
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-       // }
     }
 
     fun closeServer() {
