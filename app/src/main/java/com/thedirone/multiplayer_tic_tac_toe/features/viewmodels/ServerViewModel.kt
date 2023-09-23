@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.thedirone.multiplayer_tic_tac_toe.core.utils.isWonGame
 import com.thedirone.multiplayer_tic_tac_toe.core.utils.returnCopiedIntArr
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,8 +15,6 @@ import java.io.BufferedOutputStream
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
 import java.net.ServerSocket
 import java.net.Socket
 
@@ -32,7 +31,19 @@ class ServerViewModel : ViewModel() {
     private val _gameArrayInfo = MutableLiveData<IntArray>()
     val gameArrayInfo: LiveData<IntArray> = _gameArrayInfo
 
-    private val gameArr = IntArray(9)
+    private val _isOpponentWon = MutableLiveData<Boolean>(false)
+    val isOpponentWon: LiveData<Boolean> = _isOpponentWon
+
+    private val _amIWon = MutableLiveData<Boolean>(false)
+    val amIWon: LiveData<Boolean> = _amIWon
+
+//    private val _isGameResetByOpponent = MutableLiveData<Boolean>(false)
+//    val isGameResetByOpponent: LiveData<Boolean> = _isGameResetByOpponent
+
+    // Server is always Player 1
+      var isServerTurn:Boolean = false
+
+    private var gameArr = IntArray(9)
 
     private var serverSocket: ServerSocket? = null
     private var socket: Socket? = null
@@ -67,6 +78,8 @@ class ServerViewModel : ViewModel() {
             Log.d("ServerTesting", "client connected")
             withContext(Dispatchers.Main){
                 _serverStatus.value = "client connected"
+                 isServerTurn = true
+                _serverStatus.value = "Your Turn!"
             }
 
                     // create input and output streams
@@ -84,6 +97,7 @@ class ServerViewModel : ViewModel() {
 
             try {
                 while(true) {
+                    val opponentWinningStatus = dataInputStream!!.readBoolean()
                     val pos = dataInputStream!!.readInt()
                     val data = dataInputStream!!.readInt()
                     Log.d("ServerReceived", "Position is ${pos.toString()}")
@@ -93,6 +107,13 @@ class ServerViewModel : ViewModel() {
                         if(gameArr[pos] == 0){
                             gameArr[pos] = data
                             _gameArrayInfo.value = returnCopiedIntArr(gameArr)
+                            _isOpponentWon.value = opponentWinningStatus
+                            isServerTurn = true
+                            if(opponentWinningStatus){
+                                _serverStatus.value = "Your Loose!"
+                            } else {
+                                _serverStatus.value = "Your Turn!"
+                            }
                         }
                     }
 //                    withContext(Dispatchers.Main){
@@ -106,14 +127,25 @@ class ServerViewModel : ViewModel() {
     }
 
     fun sendDataWithPositionToClient(pos:Int, data:Int = 1) {
+        var isServerWon = false
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 withContext(Dispatchers.Main) {
                     if(gameArr[pos] == 0){
                          gameArr[pos] = data
                         _gameArrayInfo.value = returnCopiedIntArr(gameArr)
+                         isServerTurn = false
+                        // Here player 1 means Server
+                        isServerWon = isWonGame(player = 1, gameArr)
+                        if(isServerWon){
+                            _serverStatus.value = "You Won!"
+                            _amIWon.value = true
+                        } else {
+                            _serverStatus.value = "Opponent's Turn!"
+                        }
                     }
                 }
+                dataOutputStream!!.writeBoolean(isServerWon)
                 dataOutputStream!!.writeInt(pos)
                 dataOutputStream!!.writeInt(data)
                 dataOutputStream!!.flush()
@@ -125,8 +157,17 @@ class ServerViewModel : ViewModel() {
     }
 
     fun closeServer() {
-        viewModelScope.launch {
-
+        viewModelScope.launch(Dispatchers.IO) {
+            serverSocket?.close()
         }
+    }
+
+    fun resetGame() {
+        gameArr = IntArray(9)
+        _gameArrayInfo.value = returnCopiedIntArr(gameArr)
+        _isOpponentWon.value = false
+        _amIWon.value = false
+        isServerTurn = true
+        _serverStatus.value = "Your Turn!"
     }
 }

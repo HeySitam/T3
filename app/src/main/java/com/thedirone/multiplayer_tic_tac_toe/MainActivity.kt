@@ -64,10 +64,10 @@ fun MyApp() {
             )
         }
         composable(route = Route.clientPageRoute){
-            ClientPageScreen()
+            ClientPageScreen(navController)
         }
         composable(route = Route.serverPageRoute){
-            ServerPageScreen()
+            ServerPageScreen(navController)
         }
     }
  // HomePageScreen()

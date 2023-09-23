@@ -56,16 +56,6 @@ fun getContentDescription(gameData: Int): String {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameBoard(gameArr: IntArray, statusMsg: String?, onClickedBtn: (pos: Int) -> Unit) {
-//    val imageSrc =
-//        when (gameData) {
-//            1 -> painterResource(id = R.drawable.cross)
-//            2 -> painterResource(
-//                id = R.drawable.zero
-//            )
-//            else -> painterResource(id = R.drawable.transparent_img)
-//        }
-//    val externalPadding = if (gameData == 1) paddingForCross else externalPaddingForCircle
-//    val internalPadding = if (gameData == 1) paddingForCross else internalPaddingForCircle
     Scaffold(
         topBar = {
             TopAppBar(
@@ -100,8 +90,8 @@ fun GameBoard(gameArr: IntArray, statusMsg: String?, onClickedBtn: (pos: Int) ->
                         .weight(1f)
                         .padding(getExternalPadding(gameData = gameArr[0]))
                         .background(color = Color.White, shape = RoundedCornerShape(size = 8.dp))
-                        .padding(getInternalPadding(gameData = gameArr[0]))
                         .clickable { onClickedBtn(0) }
+                        .padding(getInternalPadding(gameData = gameArr[0]))
                 )
                 Image(
                     painter = ImgSrc(gameData = gameArr[1]),
@@ -111,8 +101,8 @@ fun GameBoard(gameArr: IntArray, statusMsg: String?, onClickedBtn: (pos: Int) ->
                         .weight(1f)
                         .padding(getExternalPadding(gameData = gameArr[1]))
                         .background(color = Color.White, shape = RoundedCornerShape(size = 8.dp))
-                        .padding(getInternalPadding(gameData = gameArr[1]))
                         .clickable { onClickedBtn(1) }
+                        .padding(getInternalPadding(gameData = gameArr[1]))
                 )
                 Image(
                     painter = ImgSrc(gameData = gameArr[2]),
@@ -122,8 +112,8 @@ fun GameBoard(gameArr: IntArray, statusMsg: String?, onClickedBtn: (pos: Int) ->
                         .weight(1f)
                         .padding(getExternalPadding(gameData = gameArr[2]))
                         .background(color = Color.White, shape = RoundedCornerShape(size = 8.dp))
-                        .padding(getInternalPadding(gameData = gameArr[2]))
                         .clickable { onClickedBtn(2) }
+                        .padding(getInternalPadding(gameData = gameArr[2]))
                 )
             }
 
@@ -141,8 +131,9 @@ fun GameBoard(gameArr: IntArray, statusMsg: String?, onClickedBtn: (pos: Int) ->
                         .weight(1f)
                         .padding(getExternalPadding(gameData = gameArr[3]))
                         .background(color = Color.White, shape = RoundedCornerShape(size = 8.dp))
-                        .padding(getInternalPadding(gameData = gameArr[3]))
                         .clickable { onClickedBtn(3) }
+                        .padding(getInternalPadding(gameData = gameArr[3]))
+
                 )
                 Image(
                     painter = ImgSrc(gameData = gameArr[4]),
@@ -152,8 +143,8 @@ fun GameBoard(gameArr: IntArray, statusMsg: String?, onClickedBtn: (pos: Int) ->
                         .weight(1f)
                         .padding(getExternalPadding(gameData = gameArr[4]))
                         .background(color = Color.White, shape = RoundedCornerShape(size = 8.dp))
-                        .padding(getInternalPadding(gameData = gameArr[4]))
                         .clickable { onClickedBtn(4) }
+                        .padding(getInternalPadding(gameData = gameArr[4]))
                 )
                 Image(
                     painter = ImgSrc(gameData = gameArr[5]),
@@ -163,8 +154,8 @@ fun GameBoard(gameArr: IntArray, statusMsg: String?, onClickedBtn: (pos: Int) ->
                         .weight(1f)
                         .padding(getExternalPadding(gameData = gameArr[5]))
                         .background(color = Color.White, shape = RoundedCornerShape(size = 8.dp))
-                        .padding(getInternalPadding(gameData = gameArr[5]))
                         .clickable { onClickedBtn(5) }
+                        .padding(getInternalPadding(gameData = gameArr[5]))
                 )
             }
 
@@ -182,8 +173,8 @@ fun GameBoard(gameArr: IntArray, statusMsg: String?, onClickedBtn: (pos: Int) ->
                         .weight(1f)
                         .padding(getExternalPadding(gameData = gameArr[6]))
                         .background(color = Color.White, shape = RoundedCornerShape(size = 8.dp))
-                        .padding(getInternalPadding(gameData = gameArr[6]))
                         .clickable { onClickedBtn(6) }
+                        .padding(getInternalPadding(gameData = gameArr[6]))
                 )
                 Image(
                     painter = ImgSrc(gameData = gameArr[7]),
@@ -193,8 +184,8 @@ fun GameBoard(gameArr: IntArray, statusMsg: String?, onClickedBtn: (pos: Int) ->
                         .weight(1f)
                         .padding(getExternalPadding(gameData = gameArr[7]))
                         .background(color = Color.White, shape = RoundedCornerShape(size = 8.dp))
-                        .padding(getInternalPadding(gameData = gameArr[7]))
                         .clickable { onClickedBtn(7) }
+                        .padding(getInternalPadding(gameData = gameArr[7]))
                 )
                 Image(
                     painter = ImgSrc(gameData = gameArr[8]),
@@ -204,8 +195,8 @@ fun GameBoard(gameArr: IntArray, statusMsg: String?, onClickedBtn: (pos: Int) ->
                         .weight(1f)
                         .padding(getExternalPadding(gameData = gameArr[8]))
                         .background(color = Color.White, shape = RoundedCornerShape(size = 8.dp))
-                        .padding(getInternalPadding(gameData = gameArr[8]))
                         .clickable { onClickedBtn(8) }
+                        .padding(getInternalPadding(gameData = gameArr[8]))
 
                 )
             }

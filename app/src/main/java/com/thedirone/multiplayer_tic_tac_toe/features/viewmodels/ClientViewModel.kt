@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.thedirone.multiplayer_tic_tac_toe.core.utils.isWonGame
 import com.thedirone.multiplayer_tic_tac_toe.core.utils.returnCopiedIntArr
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,8 +15,6 @@ import java.io.BufferedOutputStream
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
 import java.net.Socket
 
 // For now Client is for O
@@ -31,7 +30,16 @@ class ClientViewModel : ViewModel() {
     private val _gameArrayInfo = MutableLiveData<IntArray>()
     val gameArrayInfo: LiveData<IntArray> = _gameArrayInfo
 
-    private val gameArr = IntArray(9)
+    private val _isOpponentWon = MutableLiveData<Boolean>()
+    val isOpponentWon: LiveData<Boolean> = _isOpponentWon
+
+    private val _amIWon = MutableLiveData<Boolean>(false)
+    val amIWon: LiveData<Boolean> = _amIWon
+
+    // Client is always Player 2
+    var isClientTurn: Boolean = false
+
+    private var gameArr = IntArray(9)
 
     private var socket: Socket? = null
     private var dataInputStream: DataInputStream? = null
@@ -43,14 +51,14 @@ class ClientViewModel : ViewModel() {
                 socket = Socket(ipAddr, 2345)
             } catch (e: IOException) {
                 Log.d("ClientTesting", "failed to start client socket")
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     _clientStatus.value = "failed to start client socket"
                 }
                 e.printStackTrace()
             }
 
             Log.d("ClientTesting", "creating data streams...")
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 _clientStatus.value = "creating data streams..."
             }
             try {
@@ -59,44 +67,65 @@ class ClientViewModel : ViewModel() {
                     DataOutputStream(BufferedOutputStream(socket!!.getOutputStream()))
             } catch (e: IOException) {
                 Log.d("ClientTesting", "failed to create streams")
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     _clientStatus.value = "failed to create streams"
                 }
                 e.printStackTrace()
             }
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 _clientStatus.value = "Connected!"
+                _clientStatus.value = "Opponent's Turn!"
             }
 
             try {
-                while(true) {
-                      val pos = dataInputStream!!.readInt()
-                      val data = dataInputStream!!.readInt()
+                while (true) {
+                    val opponentWinningStatus = dataInputStream!!.readBoolean()
+                    val pos = dataInputStream!!.readInt()
+                    val data = dataInputStream!!.readInt()
                     Log.d("ClientReceived", "Position is ${pos.toString()}")
                     Log.d("ClientReceived", "data is ${data.toString()}")
                     withContext(Dispatchers.Main) {
-                        if(gameArr[pos] == 0){
-                             gameArr[pos] = data
+                        if (gameArr[pos] == 0) {
+                            gameArr[pos] = data
                             _gameArrayInfo.value = returnCopiedIntArr(gameArr)
+                            _isOpponentWon.value = opponentWinningStatus
+                            isClientTurn = true
+                            if(opponentWinningStatus){
+                                _clientStatus.value = "Your Loose!"
+                            } else {
+                                _clientStatus.value = "Your Turn!"
+                            }
+
                         }
                     }
                     Log.d("ClientReceived", "game array is ${gameArr.toList()}")
-               }
+                }
             } catch (e: IOException) {
                 e.printStackTrace()
             }
         }
     }
 
-    fun sendDataWithPositionToServer(pos:Int, data:Int = 2) {
+    fun sendDataWithPositionToServer(pos: Int, data: Int = 2) {
+        var isClientWon = false
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 withContext(Dispatchers.Main) {
-                    if(gameArr[pos] == 0){
-                         gameArr[pos] = data
+                    if (gameArr[pos] == 0) {
+                        gameArr[pos] = data
                         _gameArrayInfo.value = returnCopiedIntArr(gameArr)
+                        isClientTurn = false
+                        // Here player 2 means Client
+                        isClientWon = isWonGame(player = 2, gameArr)
+                        if(isClientWon){
+                            _amIWon.value = true
+                            _clientStatus.value = "You Won!"
+                        } else {
+                            _clientStatus.value = "Opponent's Turn!"
+                        }
                     }
                 }
+                dataOutputStream!!.writeBoolean(isClientWon)
                 dataOutputStream!!.writeInt(pos)
                 dataOutputStream!!.writeInt(data)
                 dataOutputStream!!.flush()
@@ -107,4 +136,18 @@ class ClientViewModel : ViewModel() {
         }
     }
 
+    fun closeClient() {
+        viewModelScope.launch(Dispatchers.IO) {
+            socket?.close()
+        }
+    }
+
+    fun resetGame() {
+        gameArr = IntArray(9)
+        _gameArrayInfo.value = returnCopiedIntArr(gameArr)
+        _isOpponentWon.value = false
+        _amIWon.value = false
+        isClientTurn = false
+        _clientStatus.value = "Opponent's Turn!"
+    }
 }
