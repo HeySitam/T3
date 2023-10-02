@@ -32,20 +32,20 @@ import com.thedirone.multiplayer_tic_tac_toe.features.ui.widgets.GameBoard
 import com.thedirone.multiplayer_tic_tac_toe.features.viewmodels.ClientViewModel
 
 @Composable
-fun ClientPageScreen(navController: NavController,clientViewModel: ClientViewModel) {
-   // val clientViewModel: ClientViewModel = viewModel()
+fun ClientPageScreen(navController: NavController) {
+    val clientViewModel: ClientViewModel = viewModel()
     val statusMsgState = clientViewModel.clientStatus.observeAsState()
     val receivedDataFromServer = clientViewModel.receivedDataFromServer.observeAsState()
     val gameArray = clientViewModel.gameArrayInfo.observeAsState()
     val isOpponentWin = clientViewModel.isOpponentWon.observeAsState()
     val amIWon = clientViewModel.amIWon.observeAsState()
     var text by rememberSaveable { mutableStateOf("Text from client") }
-//    remember {
-//        clientViewModel.apply {
-//            connectToServer(ipAddr = "192.168.0.145")
-//        }
-//        null
-//    }
+    remember {
+        clientViewModel.apply {
+            connectToServer(ipAddr = "192.168.0.145")
+        }
+        null
+    }
 
     // Handling onBackPressed
     BackHandler(

@@ -96,18 +96,18 @@ fun MyApp(ipAddr:String, context: Context) {
             HomePageScreen(
                 onHostBtnClick = {
                    // navController.navigate(Route.serverPageRoute)
-                    navController.navigate(Route.serverQrShowPageRoute)
+                    navController.navigate(Route.serverPageRoute)
                 },
                 onJoinBtnClick = {
-                    navController.navigate(Route.clientQrScannerPageRoute)
+                    navController.navigate(Route.clientPageRoute)
                 }
             )
         }
         composable(route = Route.clientPageRoute){
-            ClientPageScreen(navController,clientVM)
+            ClientPageScreen(navController)
         }
         composable(route = Route.serverPageRoute){
-            ServerPageScreen(navController,serverVM)
+            ServerPageScreen(navController)
         }
         composable(route = Route.serverQrShowPageRoute){
             ServerQrShowPage(navController = navController, ipAddr = ipAddr, serverVM = serverVM)
