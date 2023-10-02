@@ -37,6 +37,9 @@ class ServerViewModel : ViewModel() {
     private val _amIWon = MutableLiveData<Boolean>(false)
     val amIWon: LiveData<Boolean> = _amIWon
 
+    private val _isConnectedWithClinet = MutableLiveData<Boolean>(false)
+    val isConnectedWithClinet: LiveData<Boolean> = _isConnectedWithClinet
+
 //    private val _isGameResetByOpponent = MutableLiveData<Boolean>(false)
 //    val isGameResetByOpponent: LiveData<Boolean> = _isGameResetByOpponent
 
@@ -52,7 +55,7 @@ class ServerViewModel : ViewModel() {
     fun startServer() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                serverSocket = ServerSocket(2345)
+                serverSocket = ServerSocket(3000)
             } catch (e: IOException) {
                 Log.d("ServerTesting", "failed to start server socket")
                 withContext(Dispatchers.Main){
@@ -77,11 +80,11 @@ class ServerViewModel : ViewModel() {
             }
             Log.d("ServerTesting", "client connected")
             withContext(Dispatchers.Main){
+                 _isConnectedWithClinet.value = true
                 _serverStatus.value = "client connected"
                  isServerTurn = true
                 _serverStatus.value = "Your Turn!"
             }
-
                     // create input and output streams
             try {
                 dataInputStream = DataInputStream(BufferedInputStream(socket!!.getInputStream()))

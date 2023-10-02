@@ -36,6 +36,9 @@ class ClientViewModel : ViewModel() {
     private val _amIWon = MutableLiveData<Boolean>(false)
     val amIWon: LiveData<Boolean> = _amIWon
 
+    private val _isConnectedWithServer = MutableLiveData<Boolean>(false)
+    val isConnectedWithServer: LiveData<Boolean> = _isConnectedWithServer
+
     // Client is always Player 2
     var isClientTurn: Boolean = false
 
@@ -46,9 +49,10 @@ class ClientViewModel : ViewModel() {
     private var dataOutputStream: DataOutputStream? = null
 
     fun connectToServer(ipAddr: String) {
+        Log.d("chkIp", ipAddr)
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                socket = Socket(ipAddr, 2345)
+                socket = Socket(ipAddr,3000)
             } catch (e: IOException) {
                 Log.d("ClientTesting", "failed to start client socket")
                 withContext(Dispatchers.Main) {
@@ -73,7 +77,8 @@ class ClientViewModel : ViewModel() {
                 e.printStackTrace()
             }
             withContext(Dispatchers.Main) {
-                _clientStatus.value = "Connected!"
+                _isConnectedWithServer.value = true
+                _clientStatus.value = "Connected with Server!"
                 _clientStatus.value = "Opponent's Turn!"
             }
 

@@ -31,22 +31,22 @@ import com.thedirone.multiplayer_tic_tac_toe.features.ui.widgets.AppAlertDialog
 import com.thedirone.multiplayer_tic_tac_toe.features.ui.widgets.GameBoard
 import com.thedirone.multiplayer_tic_tac_toe.features.viewmodels.ServerViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
-fun ServerPageScreen(navController: NavController) {
-    val serverVM: ServerViewModel = viewModel()
+fun ServerPageScreen(navController: NavController, serverVM: ServerViewModel) {
+   // val serverVM: ServerViewModel = viewModel()
     val statusMsgState = serverVM.serverStatus.observeAsState()
     val gameArray = serverVM.gameArrayInfo.observeAsState()
     val isOpponentWin = serverVM.isOpponentWon.observeAsState()
     val amIWon = serverVM.amIWon.observeAsState()
     val receivedData = serverVM.receivedDataFromClient.observeAsState()
     var text by rememberSaveable { mutableStateOf("Text from Server") }
-    remember {
-        serverVM.apply {
-            startServer()
-        }
-        null
-    }
+//    remember {
+//        serverVM.apply {
+//            startServer()
+//        }
+//        null
+//    }
     // Handling onBackPressed
     BackHandler() {
         serverVM.closeServer()
