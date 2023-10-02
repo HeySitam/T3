@@ -22,8 +22,6 @@ import java.net.Socket
 // X => 1
 // O => 2
 class ServerViewModel : ViewModel() {
-    private val _receivedDataFromClient = MutableLiveData<Int>()
-    val receivedDataFromClient: LiveData<Int> = _receivedDataFromClient
 
     private val _serverStatus = MutableLiveData<String>()
     val serverStatus: LiveData<String> = _serverStatus
@@ -39,9 +37,6 @@ class ServerViewModel : ViewModel() {
 
     private val _isConnectedWithClinet = MutableLiveData<Boolean>(false)
     val isConnectedWithClinet: LiveData<Boolean> = _isConnectedWithClinet
-
-//    private val _isGameResetByOpponent = MutableLiveData<Boolean>(false)
-//    val isGameResetByOpponent: LiveData<Boolean> = _isGameResetByOpponent
 
     // Server is always Player 1
       var isServerTurn:Boolean = false
@@ -70,7 +65,9 @@ class ServerViewModel : ViewModel() {
                 _serverStatus.value = "waiting for connections..."
             }
             try {
-                socket = serverSocket!!.accept()
+                serverSocket?.let {
+                    socket = it.accept()
+                }
             } catch (e: IOException) {
                 withContext(Dispatchers.Main){
                     _serverStatus.value = "failed to accept"
@@ -87,9 +84,11 @@ class ServerViewModel : ViewModel() {
             }
                     // create input and output streams
             try {
-                dataInputStream = DataInputStream(BufferedInputStream(socket!!.getInputStream()))
-                dataOutputStream =
-                    DataOutputStream(BufferedOutputStream(socket!!.getOutputStream()))
+                socket?.let {
+                    dataInputStream = DataInputStream(BufferedInputStream(it.getInputStream()))
+                    dataOutputStream =
+                        DataOutputStream(BufferedOutputStream(it.getOutputStream()))
+                }
             } catch (e: IOException) {
                 Log.d("ServerTesting", "failed to create streams")
                 withContext(Dispatchers.Main){
@@ -100,28 +99,24 @@ class ServerViewModel : ViewModel() {
 
             try {
                 while(true) {
-                    val opponentWinningStatus = dataInputStream!!.readBoolean()
-                    val pos = dataInputStream!!.readInt()
-                    val data = dataInputStream!!.readInt()
-                    Log.d("ServerReceived", "Position is ${pos.toString()}")
-                    Log.d("ServerReceived", "data is ${data.toString()}")
-                   // gameArr[pos] = data
-                    withContext(Dispatchers.Main) {
-                        if(gameArr[pos] == 0){
-                            gameArr[pos] = data
-                            _gameArrayInfo.value = returnCopiedIntArr(gameArr)
-                            _isOpponentWon.value = opponentWinningStatus
-                            isServerTurn = true
-                            if(opponentWinningStatus){
-                                _serverStatus.value = "Your Loose!"
-                            } else {
-                                _serverStatus.value = "Your Turn!"
+                    dataInputStream?.let {
+                        val opponentWinningStatus = it.readBoolean()
+                        val pos = it.readInt()
+                        val data = it.readInt()
+                        withContext(Dispatchers.Main) {
+                            if(gameArr[pos] == 0){
+                                gameArr[pos] = data
+                                _gameArrayInfo.value = returnCopiedIntArr(gameArr)
+                                _isOpponentWon.value = opponentWinningStatus
+                                isServerTurn = true
+                                if(opponentWinningStatus){
+                                    _serverStatus.value = "Your Loose!"
+                                } else {
+                                    _serverStatus.value = "Your Turn!"
+                                }
                             }
                         }
                     }
-//                    withContext(Dispatchers.Main){
-//                        _receivedDataFromClient.value = test
-//                    }
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -148,10 +143,12 @@ class ServerViewModel : ViewModel() {
                         }
                     }
                 }
-                dataOutputStream!!.writeBoolean(isServerWon)
-                dataOutputStream!!.writeInt(pos)
-                dataOutputStream!!.writeInt(data)
-                dataOutputStream!!.flush()
+                dataOutputStream?.let {
+                    it.writeBoolean(isServerWon)
+                    it.writeInt(pos)
+                    it.writeInt(data)
+                    it.flush()
+                }
             } catch (e: IOException) {
                 Log.d("ServerTesting", "failed to send: ${e.message}")
                 e.printStackTrace()

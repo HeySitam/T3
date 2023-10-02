@@ -39,22 +39,7 @@ class MainActivity : ComponentActivity() {
         val moduleInstallRequest =
             ModuleInstallRequest.newBuilder()
                 .addApi(optionalModuleApi).build()
-//        moduleInstallClient
-//            .areModulesAvailable(optionalModuleApi)
-//            .addOnSuccessListener {
-//                if (it.areModulesAvailable()) {
-//                    // Modules are present on the device...
-//                    Log.d("moduleAvailability", "Module Available")
-//                } else {
-//                    // Modules are not present on the device...
-//                    Log.d("moduleAvailability", "Module not available")
-//                    moduleInstallClient.deferredInstall(optionalModuleApi)
-//
-//                }
-//            }
-//            .addOnFailureListener {
-//                // Handle failure...
-//            }
+
         moduleInstallClient
             .installModules(moduleInstallRequest)
             .addOnSuccessListener {
@@ -89,13 +74,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyApp(ipAddr:String, context: Context) {
     val navController = rememberNavController()
-    val serverVM: ServerViewModel = viewModel()
-    val clientVM: ClientViewModel = viewModel()
     NavHost(navController = navController, startDestination = Route.homePageRoute){
         composable(route = Route.homePageRoute){
             HomePageScreen(
                 onHostBtnClick = {
-                   // navController.navigate(Route.serverPageRoute)
                     navController.navigate(Route.serverPageRoute)
                 },
                 onJoinBtnClick = {
@@ -104,25 +86,10 @@ fun MyApp(ipAddr:String, context: Context) {
             )
         }
         composable(route = Route.clientPageRoute){
-            ClientPageScreen(navController)
+            ClientPageScreen(navController, context = context)
         }
         composable(route = Route.serverPageRoute){
-            ServerPageScreen(navController)
-        }
-        composable(route = Route.serverQrShowPageRoute){
-            ServerQrShowPage(navController = navController, ipAddr = ipAddr, serverVM = serverVM)
-        }
-        composable(route = Route.clientQrScannerPageRoute){
-            ClientQrScannerPage(navController = navController, context = context, clientVM = clientVM)
+            ServerPageScreen(navController, ipAddr = ipAddr)
         }
     }
- // HomePageScreen()
 }
-
-//@Preview(showSystemUi = true)
-//@Composable
-//fun GreetingPreview() {
-//    MultiplayerTicTacToeTheme {
-//        Greeting("Android")
-//    }
-//}

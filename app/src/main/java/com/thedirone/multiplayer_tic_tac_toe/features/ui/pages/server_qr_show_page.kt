@@ -24,23 +24,7 @@ import com.thedirone.multiplayer_tic_tac_toe.features.viewmodels.ServerViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ServerQrShowPage(serverVM: ServerViewModel, navController: NavController, ipAddr: String) {
-  //  val serverVM: ServerViewModel = viewModel()
-    val isConnectedWithClient = serverVM.isConnectedWithClinet.observeAsState()
-    if(isConnectedWithClient.value == true) {
-        Log.d("statusChk", "connected")
-        navController.navigate(Route.serverPageRoute)
-    } else {
-        Log.d("statusChk", "not connected")
-    }
-
-    remember {
-        serverVM.apply {
-            startServer()
-        }
-        null
-    }
-
+fun ServerQrShowPage(ipAddr: String) {
     Scaffold() { innerPadding ->
         Column(modifier = Modifier
             .fillMaxSize()

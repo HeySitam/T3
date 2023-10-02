@@ -33,59 +33,69 @@ import com.thedirone.multiplayer_tic_tac_toe.features.viewmodels.ServerViewModel
 
 
 @Composable
-fun ServerPageScreen(navController: NavController) {
+fun ServerPageScreen(navController: NavController, ipAddr: String) {
+    Log.d("ServerPage", "is rendering...")
     val serverVM: ServerViewModel = viewModel()
     val statusMsgState = serverVM.serverStatus.observeAsState()
     val gameArray = serverVM.gameArrayInfo.observeAsState()
     val isOpponentWin = serverVM.isOpponentWon.observeAsState()
     val amIWon = serverVM.amIWon.observeAsState()
-    val receivedData = serverVM.receivedDataFromClient.observeAsState()
-    var text by rememberSaveable { mutableStateOf("Text from Server") }
+    val isConnectedWithClient = serverVM.isConnectedWithClinet.observeAsState()
+
     remember {
         serverVM.apply {
             startServer()
         }
         null
     }
+
+    if (isConnectedWithClient.value == true) {
+        if (isOpponentWin.value == true) {
+            AppAlertDialog(
+                onPlayAgainRequest = {
+                    serverVM.resetGame()
+                },
+                onExitRequest = {
+                    navController.navigateUp()
+                    serverVM.closeServer()
+                },
+                dialogTitle = "You Loose!",
+                dialogText = "😢Better luck next time😢",
+                icon = Icons.Default.Warning
+            )
+        }
+
+        if (amIWon.value == true) {
+            AppAlertDialog(
+                onPlayAgainRequest = {
+                    serverVM.resetGame()
+                },
+                onExitRequest = {
+                    navController.navigateUp()
+                    serverVM.closeServer()
+                },
+                dialogTitle = "Booyah!",
+                dialogText = "You won the match✌️",
+                icon = Icons.Default.Done
+            )
+        }
+
+        GameBoard(
+            gameArr = gameArray.value ?: IntArray(9),
+            statusMsg = statusMsgState.value
+        ) { pos ->
+            if (serverVM.isServerTurn) {
+                serverVM.sendDataWithPositionToClient(pos = pos)
+            }
+            Log.d("SelectedPos", pos.toString())
+        }
+    } else if (isConnectedWithClient.value == false) {
+        ServerQrShowPage(ipAddr = ipAddr)
+    }
+
     // Handling onBackPressed
-    BackHandler() {
+    BackHandler {
         serverVM.closeServer()
         navController.navigateUp()
-    }
-    if (isOpponentWin.value == true) {
-        AppAlertDialog(
-            onPlayAgainRequest = {
-                serverVM.resetGame()
-            },
-            onExitRequest = {
-                navController.navigateUp()
-                serverVM.closeServer()
-            },
-            dialogTitle = "You Loose!",
-            dialogText = "😢Better luck next time😢",
-            icon = Icons.Default.Warning
-        )
-    }
-
-    if (amIWon.value == true) {
-        AppAlertDialog(
-            onPlayAgainRequest = {
-                serverVM.resetGame()
-            },
-            onExitRequest = {
-                navController.navigateUp()
-                serverVM.closeServer()
-            },
-            dialogTitle = "Booyah!",
-            dialogText = "You won the match✌️",
-            icon = Icons.Default.Done
-        )
-    }
-
-    GameBoard(gameArr = gameArray.value ?: IntArray(9), statusMsg = statusMsgState.value) { pos ->
-        if (serverVM.isServerTurn) {
-            serverVM.sendDataWithPositionToClient(pos = pos)
-        }
-        Log.d("SelectedPos", pos.toString())
     }
 }

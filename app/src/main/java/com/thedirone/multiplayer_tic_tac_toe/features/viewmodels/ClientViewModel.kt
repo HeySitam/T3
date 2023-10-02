@@ -21,8 +21,6 @@ import java.net.Socket
 // X => 1
 // O => 2
 class ClientViewModel : ViewModel() {
-    private val _receivedDataFromServer = MutableLiveData<Int>()
-    val receivedDataFromServer: LiveData<Int> = _receivedDataFromServer
 
     private val _clientStatus = MutableLiveData<String>()
     val clientStatus: LiveData<String> = _clientStatus
@@ -54,21 +52,20 @@ class ClientViewModel : ViewModel() {
             try {
                 socket = Socket(ipAddr,3000)
             } catch (e: IOException) {
-                Log.d("ClientTesting", "failed to start client socket")
                 withContext(Dispatchers.Main) {
                     _clientStatus.value = "failed to start client socket"
                 }
                 e.printStackTrace()
             }
-
-            Log.d("ClientTesting", "creating data streams...")
             withContext(Dispatchers.Main) {
                 _clientStatus.value = "creating data streams..."
             }
             try {
-                dataInputStream = DataInputStream(BufferedInputStream(socket!!.getInputStream()))
-                dataOutputStream =
-                    DataOutputStream(BufferedOutputStream(socket!!.getOutputStream()))
+                socket?.let {
+                    dataInputStream = DataInputStream(BufferedInputStream(it.getInputStream()))
+                    dataOutputStream =
+                        DataOutputStream(BufferedOutputStream(it.getOutputStream()))
+                }
             } catch (e: IOException) {
                 Log.d("ClientTesting", "failed to create streams")
                 withContext(Dispatchers.Main) {
@@ -84,26 +81,25 @@ class ClientViewModel : ViewModel() {
 
             try {
                 while (true) {
-                    val opponentWinningStatus = dataInputStream!!.readBoolean()
-                    val pos = dataInputStream!!.readInt()
-                    val data = dataInputStream!!.readInt()
-                    Log.d("ClientReceived", "Position is ${pos.toString()}")
-                    Log.d("ClientReceived", "data is ${data.toString()}")
-                    withContext(Dispatchers.Main) {
-                        if (gameArr[pos] == 0) {
-                            gameArr[pos] = data
-                            _gameArrayInfo.value = returnCopiedIntArr(gameArr)
-                            _isOpponentWon.value = opponentWinningStatus
-                            isClientTurn = true
-                            if(opponentWinningStatus){
-                                _clientStatus.value = "Your Loose!"
-                            } else {
-                                _clientStatus.value = "Your Turn!"
-                            }
+                    dataInputStream?.let {
+                        val opponentWinningStatus = it.readBoolean()
+                        val pos = it.readInt()
+                        val data = it.readInt()
+                        withContext(Dispatchers.Main) {
+                            if (gameArr[pos] == 0) {
+                                gameArr[pos] = data
+                                _gameArrayInfo.value = returnCopiedIntArr(gameArr)
+                                _isOpponentWon.value = opponentWinningStatus
+                                isClientTurn = true
+                                if(opponentWinningStatus){
+                                    _clientStatus.value = "Your Loose!"
+                                } else {
+                                    _clientStatus.value = "Your Turn!"
+                                }
 
+                            }
                         }
                     }
-                    Log.d("ClientReceived", "game array is ${gameArr.toList()}")
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -130,10 +126,12 @@ class ClientViewModel : ViewModel() {
                         }
                     }
                 }
-                dataOutputStream!!.writeBoolean(isClientWon)
-                dataOutputStream!!.writeInt(pos)
-                dataOutputStream!!.writeInt(data)
-                dataOutputStream!!.flush()
+                dataOutputStream?.let {
+                    it.writeBoolean(isClientWon)
+                    it.writeInt(pos)
+                    it.writeInt(data)
+                    it.flush()
+                }
             } catch (e: IOException) {
                 Log.d("ServerTesting", "failed to send: ${e.message}")
                 e.printStackTrace()
