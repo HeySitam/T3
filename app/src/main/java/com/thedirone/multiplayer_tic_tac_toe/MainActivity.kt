@@ -34,23 +34,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val moduleInstallClient = ModuleInstall.getClient(this)
-        val optionalModuleApi = GmsBarcodeScanning.getClient(this)
-        val moduleInstallRequest =
-            ModuleInstallRequest.newBuilder()
-                .addApi(optionalModuleApi).build()
-
-        moduleInstallClient
-            .installModules(moduleInstallRequest)
-            .addOnSuccessListener {
-                if (it.areModulesAlreadyInstalled()) {
-                    // Modules are already installed when the request is sent.
-                }
-            }
-            .addOnFailureListener {
-                // Handle failure…
-            }
-
         setContent {
             MultiplayerTicTacToeTheme {
                 // A surface container using the 'background' color from the theme
