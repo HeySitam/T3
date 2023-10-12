@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.ElevatedButton
@@ -40,6 +41,7 @@ fun ClientPageScreen(navController: NavController, context: Context) {
     val gameArray = clientViewModel.gameArrayInfo.observeAsState()
     val isOpponentWin = clientViewModel.isOpponentWon.observeAsState()
     val amIWon = clientViewModel.amIWon.observeAsState()
+    val isMatchDraw = clientViewModel.isMatchDraw.observeAsState()
 
     val isConnectedWithServer = clientViewModel.isConnectedWithServer.observeAsState()
     if (isConnectedWithServer.value == true) {
@@ -70,6 +72,21 @@ fun ClientPageScreen(navController: NavController, context: Context) {
                 dialogTitle = "Booyah!",
                 dialogText = "You won the match✌️",
                 icon = Icons.Default.Done
+            )
+        }
+
+        if (isMatchDraw.value == true) {
+            AppAlertDialog(
+                onPlayAgainRequest = {
+                    clientViewModel.resetGame()
+                },
+                onExitRequest = {
+                    navController.navigateUp()
+                    clientViewModel.closeClient()
+                },
+                dialogTitle = "Oops!",
+                dialogText = "The match is draw😜",
+                icon = Icons.Default.Clear
             )
         }
 

@@ -19,3 +19,14 @@ fun isWonGame(player:Int, gameArr: IntArray): Boolean {
         true
     } else gameArr[2] == player && gameArr[4] == player && gameArr[6] == player
 }
+
+fun isMatchDraw(amIWon: Boolean, isOpponentWon: Boolean, finalGameArray: IntArray): Boolean {
+    var isZeroExistInArray = false
+    finalGameArray.forEach {item ->
+        if(item == 0) {
+            isZeroExistInArray = true
+        }
+    }
+
+    return !isZeroExistInArray && !amIWon && !isOpponentWon
+}

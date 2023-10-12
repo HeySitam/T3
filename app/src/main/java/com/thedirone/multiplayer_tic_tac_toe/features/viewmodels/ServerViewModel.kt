@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.thedirone.multiplayer_tic_tac_toe.core.utils.isMatchDraw
 import com.thedirone.multiplayer_tic_tac_toe.core.utils.isWonGame
 import com.thedirone.multiplayer_tic_tac_toe.core.utils.returnCopiedIntArr
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +35,9 @@ class ServerViewModel : ViewModel() {
 
     private val _amIWon = MutableLiveData<Boolean>(false)
     val amIWon: LiveData<Boolean> = _amIWon
+
+    private val _isMatchDraw = MutableLiveData<Boolean>(false)
+    val isMatchDraw: LiveData<Boolean> = _isMatchDraw
 
     private val _isConnectedWithClinet = MutableLiveData<Boolean>(false)
     val isConnectedWithClinet: LiveData<Boolean> = _isConnectedWithClinet
@@ -106,6 +110,7 @@ class ServerViewModel : ViewModel() {
                         withContext(Dispatchers.Main) {
                             if(gameArr[pos] == 0){
                                 gameArr[pos] = data
+                                _isMatchDraw.value = isMatchDraw(_amIWon.value!!, opponentWinningStatus, gameArr)
                                 _gameArrayInfo.value = returnCopiedIntArr(gameArr)
                                 _isOpponentWon.value = opponentWinningStatus
                                 isServerTurn = true
@@ -135,6 +140,7 @@ class ServerViewModel : ViewModel() {
                          isServerTurn = false
                         // Here player 1 means Server
                         isServerWon = isWonGame(player = 1, gameArr)
+                        _isMatchDraw.value = isMatchDraw(isServerWon, _isOpponentWon.value!!, gameArr)
                         if(isServerWon){
                             _serverStatus.value = "You Won!"
                             _amIWon.value = true
@@ -156,6 +162,7 @@ class ServerViewModel : ViewModel() {
         }
     }
 
+
     fun closeServer() {
         viewModelScope.launch(Dispatchers.IO) {
             serverSocket?.close()
@@ -167,6 +174,7 @@ class ServerViewModel : ViewModel() {
         _gameArrayInfo.value = returnCopiedIntArr(gameArr)
         _isOpponentWon.value = false
         _amIWon.value = false
+        _isMatchDraw.value = false
         isServerTurn = true
         _serverStatus.value = "Your Turn!"
     }
