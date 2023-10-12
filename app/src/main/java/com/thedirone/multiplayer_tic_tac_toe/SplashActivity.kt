@@ -89,7 +89,6 @@ fun SplashScreenPage(context: Context, onNavigation:() -> Unit) {
             when (installState) {
                 STATE_COMPLETED -> {
                     onNavigation()
-                   // context.startActivity(Intent(context, MainActivity::class.java))
                 }
                 STATE_FAILED, STATE_CANCELED -> {
                     Toast.makeText(context,"Please restart your app and check your internet connection!", Toast.LENGTH_LONG).show()
@@ -114,12 +113,10 @@ fun SplashScreenPage(context: Context, onNavigation:() -> Unit) {
                 if (it.areModulesAlreadyInstalled()) {
                     // Modules are already installed when the request is sent.
                     onNavigation()
-                   // context.startActivity(Intent(context, MainActivity::class.java))
                 }
             }
             .addOnFailureListener {
                 // Handle failure…
-                Log.d("isDownloading", it.message.toString())
                 Toast.makeText(context,"Something went wrong!", Toast.LENGTH_SHORT).show()
             }
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.thedirone.multiplayer_tic_tac_toe.core.utils.isMatchDraw
 import com.thedirone.multiplayer_tic_tac_toe.core.utils.isWonGame
 import com.thedirone.multiplayer_tic_tac_toe.core.utils.returnCopiedIntArr
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +34,9 @@ class ClientViewModel : ViewModel() {
 
     private val _amIWon = MutableLiveData<Boolean>(false)
     val amIWon: LiveData<Boolean> = _amIWon
+
+    private val _isMatchDraw = MutableLiveData<Boolean>(false)
+    val isMatchDraw: LiveData<Boolean> = _isMatchDraw
 
     private val _isConnectedWithServer = MutableLiveData<Boolean>(false)
     val isConnectedWithServer: LiveData<Boolean> = _isConnectedWithServer
@@ -88,6 +92,7 @@ class ClientViewModel : ViewModel() {
                         withContext(Dispatchers.Main) {
                             if (gameArr[pos] == 0) {
                                 gameArr[pos] = data
+                                _isMatchDraw.value = isMatchDraw(_amIWon.value!!, opponentWinningStatus, gameArr)
                                 _gameArrayInfo.value = returnCopiedIntArr(gameArr)
                                 _isOpponentWon.value = opponentWinningStatus
                                 isClientTurn = true
@@ -118,6 +123,7 @@ class ClientViewModel : ViewModel() {
                         isClientTurn = false
                         // Here player 2 means Client
                         isClientWon = isWonGame(player = 2, gameArr)
+                        _isMatchDraw.value = isMatchDraw(isClientWon, _isOpponentWon.value!!, gameArr)
                         if(isClientWon){
                             _amIWon.value = true
                             _clientStatus.value = "You Won!"
@@ -150,6 +156,7 @@ class ClientViewModel : ViewModel() {
         _gameArrayInfo.value = returnCopiedIntArr(gameArr)
         _isOpponentWon.value = false
         _amIWon.value = false
+        _isMatchDraw.value = false
         isClientTurn = false
         _clientStatus.value = "Opponent's Turn!"
     }
