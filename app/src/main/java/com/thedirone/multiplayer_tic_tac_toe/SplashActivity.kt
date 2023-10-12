@@ -52,7 +52,10 @@ class SplashActivity: ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                   SplashScreenPage(this@SplashActivity)
+                   SplashScreenPage(this@SplashActivity) {
+                       startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                       finish()
+                   }
                 }
             }
         }
@@ -68,7 +71,7 @@ class ModuleInstallProgressListener(val installStateUpdate: (Int) -> Unit) : Ins
 }
 
 @Composable
-fun SplashScreenPage(context: Context) {
+fun SplashScreenPage(context: Context, onNavigation:() -> Unit) {
     val alpha = remember {
         Animatable(0f)
     }
@@ -85,7 +88,8 @@ fun SplashScreenPage(context: Context) {
         val listener = ModuleInstallProgressListener { installState->
             when (installState) {
                 STATE_COMPLETED -> {
-                    context.startActivity(Intent(context, MainActivity::class.java))
+                    onNavigation()
+                   // context.startActivity(Intent(context, MainActivity::class.java))
                 }
                 STATE_FAILED, STATE_CANCELED -> {
                     Toast.makeText(context,"Please restart your app and check your internet connection!", Toast.LENGTH_LONG).show()
@@ -109,7 +113,8 @@ fun SplashScreenPage(context: Context) {
             .addOnSuccessListener {
                 if (it.areModulesAlreadyInstalled()) {
                     // Modules are already installed when the request is sent.
-                    context.startActivity(Intent(context, MainActivity::class.java))
+                    onNavigation()
+                   // context.startActivity(Intent(context, MainActivity::class.java))
                 }
             }
             .addOnFailureListener {
