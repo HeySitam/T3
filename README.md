@@ -37,7 +37,7 @@ T3 is a multiplayer real-time Tic-Tac-Toe game that uses the Socket Programming 
 - [Zxing](https://mvnrepository.com/artifact/com.google.zxing/core/3.5.1) - Zxing is an open-source barcode scanning library for Java and Android. Here we have used it to generate the QR at the time game hosting.
 
 ## Screenshots 📷 
-![light_screenshot](https://github.com/sitamadex11/CovidHelp/blob/develop/Assets/AllScreenShots.png)
+![light_screenshot](https://github.com/theDIRone/T3/blob/dev/assets/all_grid.png)
 
 ## Download 📥
 - Click [Here](https://drive.google.com/u/2/uc?id=1OWIi9xcCLTTyZtJHTVzPAjbA3RiiVCal&export=download) to download the latest apk.
