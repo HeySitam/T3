@@ -110,6 +110,6 @@ SOFTWARE.
 
 <br>
 <br>
-<h2 align="center">❤ Our Aim to Help People ❤</h2>
+<h2 align="center">❤ Built with Love ❤</h2>
 
 <br>
