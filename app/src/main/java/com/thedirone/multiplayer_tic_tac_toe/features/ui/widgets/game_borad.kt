@@ -10,12 +10,19 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,18 +62,29 @@ fun getContentDescription(gameData: Int): String {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameBoard(gameArr: IntArray, statusMsg: String?, onClickedBtn: (pos: Int) -> Unit) {
+fun GameBoard(gameArr: IntArray, statusMsg: String?, onClickedBtn: (pos: Int) -> Unit, onResetButtonClick: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
                 modifier = Modifier.fillMaxWidth(),
+                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color(0xff0E121A) ),
                 title = {
                     Text(
                         statusMsg ?: "",
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        color = Color.White
                     )
-                })
+                },
+                actions = {
+                    IconButton(onClick = onResetButtonClick) {
+                        Icon( imageVector = Icons.Rounded.Refresh, contentDescription = "Reset Game Icon",
+                        modifier = Modifier.size(32.dp),
+                            tint = Color.White
+                        )
+                    }
+                }
+            )
         }
     ) { innerPadding ->
         Column(

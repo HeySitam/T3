@@ -1,6 +1,8 @@
 package com.thedirone.multiplayer_tic_tac_toe.features.ui.pages
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,7 +36,7 @@ import com.thedirone.multiplayer_tic_tac_toe.features.viewmodels.ServerViewModel
 
 
 @Composable
-fun ServerPageScreen(navController: NavController, ipAddr: String) {
+fun ServerPageScreen(navController: NavController, ipAddr: String, context: Context) {
     Log.d("ServerPage", "is rendering...")
     val serverVM: ServerViewModel = viewModel()
     val statusMsgState = serverVM.serverStatus.observeAsState()
@@ -52,10 +54,15 @@ fun ServerPageScreen(navController: NavController, ipAddr: String) {
     }
 
     if (isConnectedWithClient.value == true) {
+
+        if(serverVM.isServerTurn){
+            Toast.makeText(context,"Your Turn!", Toast.LENGTH_SHORT).show()
+        }
+
         if (isOpponentWin.value == true) {
             AppAlertDialog(
                 onPlayAgainRequest = {
-                    serverVM.resetGame()
+                    serverVM.sendResetGameRequest()
                 },
                 onExitRequest = {
                     navController.navigateUp()
@@ -70,7 +77,7 @@ fun ServerPageScreen(navController: NavController, ipAddr: String) {
         if (amIWon.value == true) {
             AppAlertDialog(
                 onPlayAgainRequest = {
-                    serverVM.resetGame()
+                    serverVM.sendResetGameRequest()
                 },
                 onExitRequest = {
                     navController.navigateUp()
@@ -85,7 +92,7 @@ fun ServerPageScreen(navController: NavController, ipAddr: String) {
         if (isMatchDraw.value == true) {
             AppAlertDialog(
                 onPlayAgainRequest = {
-                    serverVM.resetGame()
+                    serverVM.sendResetGameRequest()
                 },
                 onExitRequest = {
                     navController.navigateUp()
@@ -99,13 +106,19 @@ fun ServerPageScreen(navController: NavController, ipAddr: String) {
 
         GameBoard(
             gameArr = gameArray.value ?: IntArray(9),
-            statusMsg = statusMsgState.value
-        ) { pos ->
-            if (serverVM.isServerTurn) {
-                serverVM.sendDataWithPositionToClient(pos = pos)
+            statusMsg = statusMsgState.value,
+            onClickedBtn = { pos ->
+                if (serverVM.isServerTurn) {
+                    serverVM.sendDataWithPositionToClient(pos = pos)
+                } else {
+                    Toast.makeText(context,"Opponent's Turn!", Toast.LENGTH_SHORT).show()
+                }
+                Log.d("SelectedPos", pos.toString())
+            },
+            onResetButtonClick = {
+                serverVM.sendResetGameRequest()
             }
-            Log.d("SelectedPos", pos.toString())
-        }
+        )
     } else if (isConnectedWithClient.value == false) {
         ServerQrShowPage(ipAddr = ipAddr)
     }

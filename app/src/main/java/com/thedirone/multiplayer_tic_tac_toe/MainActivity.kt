@@ -72,7 +72,7 @@ fun MyApp(ipAddr:String, context: Context) {
             ClientPageScreen(navController, context = context)
         }
         composable(route = Route.serverPageRoute){
-            ServerPageScreen(navController, ipAddr = ipAddr)
+            ServerPageScreen(navController, ipAddr = ipAddr, context = context)
         }
     }
 }

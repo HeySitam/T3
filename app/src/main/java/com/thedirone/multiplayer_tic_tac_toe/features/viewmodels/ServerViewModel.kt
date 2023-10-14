@@ -42,6 +42,8 @@ class ServerViewModel : ViewModel() {
     private val _isConnectedWithClinet = MutableLiveData<Boolean>(false)
     val isConnectedWithClinet: LiveData<Boolean> = _isConnectedWithClinet
 
+    private var hasGameResetRequestReceived = false
+
     // Server is always Player 1
       var isServerTurn:Boolean = false
 
@@ -104,20 +106,26 @@ class ServerViewModel : ViewModel() {
             try {
                 while(true) {
                     dataInputStream?.let {
-                        val opponentWinningStatus = it.readBoolean()
-                        val pos = it.readInt()
-                        val data = it.readInt()
-                        withContext(Dispatchers.Main) {
-                            if(gameArr[pos] == 0){
-                                gameArr[pos] = data
-                                _isMatchDraw.value = isMatchDraw(_amIWon.value!!, opponentWinningStatus, gameArr)
-                                _gameArrayInfo.value = returnCopiedIntArr(gameArr)
-                                _isOpponentWon.value = opponentWinningStatus
-                                isServerTurn = true
-                                if(opponentWinningStatus){
-                                    _serverStatus.value = "Your Loose!"
-                                } else {
-                                    _serverStatus.value = "Your Turn!"
+                        hasGameResetRequestReceived = it.readBoolean()
+
+                        if(hasGameResetRequestReceived){
+                            resetGame()
+                        } else {
+                            val pos = it.readInt()
+                            val data = it.readInt()
+                            val opponentWinningStatus = it.readBoolean()
+                            withContext(Dispatchers.Main) {
+                                if(gameArr[pos] == 0){
+                                    gameArr[pos] = data
+                                    _isMatchDraw.value = isMatchDraw(_amIWon.value!!, opponentWinningStatus, gameArr)
+                                    _gameArrayInfo.value = returnCopiedIntArr(gameArr)
+                                    _isOpponentWon.value = opponentWinningStatus
+                                    isServerTurn = true
+                                    if(opponentWinningStatus){
+                                        _serverStatus.value = "Your Loose!"
+                                    } else {
+                                        _serverStatus.value = "Your Turn!"
+                                    }
                                 }
                             }
                         }
@@ -150,9 +158,11 @@ class ServerViewModel : ViewModel() {
                     }
                 }
                 dataOutputStream?.let {
-                    it.writeBoolean(isServerWon)
+                    // here sending gameResetRequest as false at first
+                    it.writeBoolean(false)
                     it.writeInt(pos)
                     it.writeInt(data)
+                    it.writeBoolean(isServerWon)
                     it.flush()
                 }
             } catch (e: IOException) {
@@ -162,6 +172,20 @@ class ServerViewModel : ViewModel() {
         }
     }
 
+    fun sendResetGameRequest() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                dataOutputStream?.let {
+                    it.writeBoolean(true)
+                    it.flush()
+                }
+            } catch (e: IOException) {
+                Log.d("ServerTesting", "failed to send: ${e.message}")
+                e.printStackTrace()
+            }
+        }
+        resetGame()
+    }
 
     fun closeServer() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -169,13 +193,18 @@ class ServerViewModel : ViewModel() {
         }
     }
 
-    fun resetGame() {
-        gameArr = IntArray(9)
-        _gameArrayInfo.value = returnCopiedIntArr(gameArr)
-        _isOpponentWon.value = false
-        _amIWon.value = false
-        _isMatchDraw.value = false
-        isServerTurn = true
-        _serverStatus.value = "Your Turn!"
+    private fun resetGame() {
+        viewModelScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                gameArr = IntArray(9)
+                _gameArrayInfo.value = returnCopiedIntArr(gameArr)
+                _isOpponentWon.value = false
+                _amIWon.value = false
+                _isMatchDraw.value = false
+                isServerTurn = true
+                _serverStatus.value = "Your Turn!"
+                hasGameResetRequestReceived = false
+            }
+        }
     }
 }

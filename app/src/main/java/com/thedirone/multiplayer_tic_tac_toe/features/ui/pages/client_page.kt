@@ -2,6 +2,7 @@ package com.thedirone.multiplayer_tic_tac_toe.features.ui.pages
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,10 +46,14 @@ fun ClientPageScreen(navController: NavController, context: Context) {
 
     val isConnectedWithServer = clientViewModel.isConnectedWithServer.observeAsState()
     if (isConnectedWithServer.value == true) {
+        if(clientViewModel.isClientTurn){
+            Toast.makeText(context,"Your Turn!", Toast.LENGTH_SHORT).show()
+        }
+
         if (isOpponentWin.value == true) {
             AppAlertDialog(
                 onPlayAgainRequest = {
-                    clientViewModel.resetGame()
+                    clientViewModel.sendResetGameRequest()
                 },
                 onExitRequest = {
                     navController.navigateUp()
@@ -63,7 +68,7 @@ fun ClientPageScreen(navController: NavController, context: Context) {
         if (amIWon.value == true) {
             AppAlertDialog(
                 onPlayAgainRequest = {
-                    clientViewModel.resetGame()
+                    clientViewModel.sendResetGameRequest()
                 },
                 onExitRequest = {
                     navController.navigateUp()
@@ -78,7 +83,7 @@ fun ClientPageScreen(navController: NavController, context: Context) {
         if (isMatchDraw.value == true) {
             AppAlertDialog(
                 onPlayAgainRequest = {
-                    clientViewModel.resetGame()
+                    clientViewModel.sendResetGameRequest()
                 },
                 onExitRequest = {
                     navController.navigateUp()
@@ -92,13 +97,19 @@ fun ClientPageScreen(navController: NavController, context: Context) {
 
         GameBoard(
             gameArr = gameArray.value ?: IntArray(9),
-            statusMsg = statusMsgState.value
-        ) { pos ->
-            Log.d("SelectedPos", pos.toString())
-            if (clientViewModel.isClientTurn) {
-                clientViewModel.sendDataWithPositionToServer(pos = pos)
+            statusMsg = statusMsgState.value,
+            onClickedBtn = { pos ->
+                Log.d("SelectedPos", pos.toString())
+                if (clientViewModel.isClientTurn) {
+                    clientViewModel.sendDataWithPositionToServer(pos = pos)
+                } else {
+                    Toast.makeText(context,"Opponent's Turn!", Toast.LENGTH_SHORT).show()
+                }
+            },
+            onResetButtonClick = {
+                clientViewModel.sendResetGameRequest()
             }
-        }
+        )
     } else if (isConnectedWithServer.value == false) {
         ClientQrScannerPage(
             context = context,

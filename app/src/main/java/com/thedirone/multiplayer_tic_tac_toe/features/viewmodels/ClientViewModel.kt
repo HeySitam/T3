@@ -44,6 +44,8 @@ class ClientViewModel : ViewModel() {
     // Client is always Player 2
     var isClientTurn: Boolean = false
 
+    private var hasGameResetRequestReceived = false
+
     private var gameArr = IntArray(9)
 
     private var socket: Socket? = null
@@ -83,25 +85,32 @@ class ClientViewModel : ViewModel() {
                 _clientStatus.value = "Opponent's Turn!"
             }
 
+
             try {
                 while (true) {
                     dataInputStream?.let {
-                        val opponentWinningStatus = it.readBoolean()
-                        val pos = it.readInt()
-                        val data = it.readInt()
-                        withContext(Dispatchers.Main) {
-                            if (gameArr[pos] == 0) {
-                                gameArr[pos] = data
-                                _isMatchDraw.value = isMatchDraw(_amIWon.value!!, opponentWinningStatus, gameArr)
-                                _gameArrayInfo.value = returnCopiedIntArr(gameArr)
-                                _isOpponentWon.value = opponentWinningStatus
-                                isClientTurn = true
-                                if(opponentWinningStatus){
-                                    _clientStatus.value = "Your Loose!"
-                                } else {
-                                    _clientStatus.value = "Your Turn!"
-                                }
+                        hasGameResetRequestReceived = it.readBoolean()
 
+                        if(hasGameResetRequestReceived){
+                            resetGame()
+                        } else {
+                            val pos = it.readInt()
+                            val data = it.readInt()
+                            val opponentWinningStatus = it.readBoolean()
+                            withContext(Dispatchers.Main) {
+                                if (gameArr[pos] == 0) {
+                                    gameArr[pos] = data
+                                    _isMatchDraw.value = isMatchDraw(_amIWon.value!!, opponentWinningStatus, gameArr)
+                                    _gameArrayInfo.value = returnCopiedIntArr(gameArr)
+                                    _isOpponentWon.value = opponentWinningStatus
+                                    isClientTurn = true
+                                    if(opponentWinningStatus){
+                                        _clientStatus.value = "Your Loose!"
+                                    } else {
+                                        _clientStatus.value = "Your Turn!"
+                                    }
+
+                                }
                             }
                         }
                     }
@@ -133,9 +142,11 @@ class ClientViewModel : ViewModel() {
                     }
                 }
                 dataOutputStream?.let {
-                    it.writeBoolean(isClientWon)
+                    // here sending gameResetRequest as false at first
+                    it.writeBoolean(false)
                     it.writeInt(pos)
                     it.writeInt(data)
+                    it.writeBoolean(isClientWon)
                     it.flush()
                 }
             } catch (e: IOException) {
@@ -145,19 +156,39 @@ class ClientViewModel : ViewModel() {
         }
     }
 
+    fun sendResetGameRequest() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                dataOutputStream?.let {
+                    it.writeBoolean(true)
+                    it.flush()
+                }
+            } catch (e: IOException) {
+                Log.d("ServerTesting", "failed to send: ${e.message}")
+                e.printStackTrace()
+            }
+        }
+        resetGame()
+    }
+
     fun closeClient() {
         viewModelScope.launch(Dispatchers.IO) {
             socket?.close()
         }
     }
 
-    fun resetGame() {
-        gameArr = IntArray(9)
-        _gameArrayInfo.value = returnCopiedIntArr(gameArr)
-        _isOpponentWon.value = false
-        _amIWon.value = false
-        _isMatchDraw.value = false
-        isClientTurn = false
-        _clientStatus.value = "Opponent's Turn!"
+    private fun resetGame() {
+        viewModelScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                gameArr = IntArray(9)
+                _gameArrayInfo.value = returnCopiedIntArr(gameArr)
+                _isOpponentWon.value = false
+                _amIWon.value = false
+                _isMatchDraw.value = false
+                isClientTurn = false
+                _clientStatus.value = "Opponent's Turn!"
+                hasGameResetRequestReceived = false
+            }
+        }
     }
 }

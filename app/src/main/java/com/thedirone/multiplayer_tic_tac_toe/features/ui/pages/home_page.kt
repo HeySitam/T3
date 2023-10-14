@@ -86,10 +86,15 @@ fun HomePageScreen(
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            ActionButton(leadingIcon = Icons.Rounded.Create, btnText = "Host", onBtnClick = onHostBtnClick)
+            ActionButton(leadingIcon = Icons.Rounded.Create, btnText = "Host Game", onBtnClick = onHostBtnClick)
             24.Vertically()
-            ActionButton(leadingIcon = Icons.Rounded.Add, btnText = "Join", onBtnClick = onJoinBtnClick)
+            ActionButton(leadingIcon = Icons.Rounded.Add, btnText = "Join Game", onBtnClick = onJoinBtnClick)
         }
+        Text(text = "v1.0.0",
+        fontSize = 16.sp,
+            color = Color.Gray,
+            modifier = Modifier.padding(bottom = 12.dp)
+        )
     }
 }
 
