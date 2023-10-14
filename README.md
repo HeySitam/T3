@@ -100,7 +100,7 @@ SOFTWARE.
 	<tr>
 		<td>
    <a href="https://github.com/sitamadex11/CovidHelp/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=sitamadex11/CovidHelp" />
+  <img src="https://contrib.rocks/image?repo=theDIRone/T3" />
 </a>
 		</td>
 	</tr>
