@@ -1,63 +1,40 @@
  <p align="center">
- <img src="https://github.com/sitamadex11/CovidHelp/blob/develop/Assets/CovidHelp%20Banner.png" height= 500 width = 889 />
+ <img src="https://github.com/theDIRone/T3/blob/dev/assets/t3.png" height= 500 width = 1200 />
 </p>
 
-# CovidHelp 🤝
+# T3 🎮
 
-This application is a treasure of all types of covid-resources like bed, oxygen, plasma/blood, test resources, medicine, doctors' information, vaccination information, and many many more. An android app to help people.
+T3 is a multiplayer real-time Tic-Tac-Toe game that uses the Socket Programming internally. In simple, this app demonstrates a real-world application of socket programming in Kotlin without using any external server.
 
 ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/Kotlin-0095D5?&style=for-the-badge&logo=kotlin&logoColor=white)
 <br>
-![Minimum API Level](https://img.shields.io/badge/Min%20API%20Level-23-green)
-![Maximum API Level](https://img.shields.io/badge/Max%20API%20Level-30-orange)
-![GitHub repo size](https://img.shields.io/github/repo-size/sitamadex11/CovidHelp)
-[![License](https://img.shields.io/badge/license-MIT-%2397ca00.svg)](https://github.com/sitamadex11/CovidHelp/blob/develop/LICENSE)
+![Minimum API Level](https://img.shields.io/badge/Min%20API%20Level-24-green)
+![Maximum API Level](https://img.shields.io/badge/Max%20API%20Level-33-orange)
+![GitHub repo size](https://img.shields.io/github/repo-size/theDIRone/T3)
+[![License](https://img.shields.io/badge/license-MIT-%2397ca00.svg)](https://github.com/theDIRone/T3/blob/develop/LICENSE)
 [![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/) 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) 
 ![contributions welcome](https://img.shields.io/static/v1.svg?label=Contributions&message=Welcome&color=0059b3&style=flat-square) 
 ![Maintenance](https://img.shields.io/maintenance/yes/2021)
 
 
-## In this app, you will get the following sections ,
+## Here is the basic instruction about app functionality,
+* To enjoy this game you need connect to a common wifi connection.
 
-* **Need Help** 💕
-> Here you will get all verified information about covid-resources from some verified websites also you can get advanced Twitter-Help support to find relevant resources in your city.
+* **Host Game** 🧩
+> Here as a player, you can host the game. After clicking on the "Host Game" button a QR will appear. Internally if you are hosting the game, it means your device now becomes a server and waiting for a client to join so that the socket connection can be established.
 
-* **Volunteers** 👥
-> Here you will get verified and aspiring volunteers' information in your local area. You can search them by your state and district and also can contact them directly from the app through message and call. Also, you can add yourself as a volunteer.
-
-* **Covid Tracker** 📲
-> Here you can track information about the latest covid cases of India and also you can get state-wise information. Also, you will be notified within every 6 hours about the latest cases in India.
-
-* **Vaccine Status** 💉
-> You can check if there any vaccination slot available or not in your area and now no need to check the COWIN website anymore and also you will be redirected to the booking portal of COWIN if the slot remains available.
-
-* **Donate** 🎁
-> Some verified websites and portals to donate for helping people in this pandemic situation.
+* **Join Game** 👥
+>  Here as a player, you can join a hosted game. After clicking on the "Join Game" button a QR SCanner will appear. Now you need to scan any host's QR from your app. Internally if you are joining the game, it means your device now becomes a client which is joining to a SocketServer so that the socket connection can be established.
 
 ## Built With 🛠
 - [Kotlin](https://kotlinlang.org/) - First class and official programming language for Android development.
-- [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) - For asynchronous and more.
-- [Android Architecture Components](https://developer.android.com/topic/libraries/architecture) - Collection of libraries that help you design robust, testable, and maintainable apps.
-  - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - Stores UI-related data that isn't destroyed on UI changes. 
-  - [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager?gclid=Cj0KCQjwxJqHBhC4ARIsAChq4atyG_0SDLhI1qeCBVL2vSzaW01jl5W-urhaeq2eYPByHVJ4rbcFJPgaAqOMEALw_wcB&gclsrc=aw.ds) - WorkManager is an API that makes it easy to schedule deferrable, asynchronous tasks that are expected to run even if the app exits or the device restarts.
-- [Volley](https://developer.android.com/training/volley) - Volley is an HTTP library that makes networking for Android apps easier and most importantly, faster. Volley is available on GitHub.
-- [Retrofit](https://square.github.io/retrofit/) - A type-safe HTTP client for Android.
-- [Notification](https://www.geeksforgeeks.org/how-to-push-notification-in-android/) - Notification is a message which appears outside of our Application’s normal UI. 
-- [Firebase](https://firebase.google.com/docs/android/setup) - Firebase is Google's mobile application development platform that helps you build, improve, and grow your app. 
-  - [FireStore](https://firebase.google.com/docs/firestore) - Cloud Firestore is a flexible, scalable NoSQL cloud database for mobile, web, and server development from Firebase and Google Cloud. 
-  - [Firebase Auth](https://firebase.google.com/docs/auth/android/password-auth) - Firebase Authentication provides backend services, easy-to-use SDKs, and ready-made UI libraries to authenticate users to your app.
-- [GSON](https://github.com/google/gson) - Gson is a Java library that can be used to convert Java Objects into their JSON representation.
-- [Glide](https://github.com/bumptech/glide) - Glide is a fast and efficient open source media management and image loading framework for Android that wraps media decoding, memory and disk caching, and resource pooling into a simple and easy to use interface.
-- [jsoup](https://jsoup.org/download) - An HTML parser library, used for Web Scrapping in android.
-- [Material Components for Android](https://github.com/material-components/material-components-android) - Modular and customizable Material Design UI components for Android.
-- **Some more 3rd party libraries used in this project :**
-  - [CircularImageView](https://github.com/lopspower/CircularImageView) - This is an Android project allowing to realize a circular ImageView in the simplest way possible.
-  - [Carousel Recyclerview](https://github.com/sparrow007/CarouselRecyclerview) - Create carousel effect in recyclerview with the CarouselRecyclerview in a simple way.
-  - [Chip Navigation Bar](https://github.com/ismaeldivita/chip-navigation-bar) - A navigation bar widget inspired on Google [Bottom Navigation](https://material.io/components/bottom-navigation) mixed with [Chips](https://material.io/components/chips) component.
-  - [EazeGraph](https://github.com/blackfizz/EazeGraph) - EazeGraph is an Android library for creating beautiful and fancy charts. 
-  - [fab-speed-dial](https://github.com/yavski/fab-speed-dial) - A simple library marrying together [FAB]
+- [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) - For asynchronous and more. With the help of Coroutines the Socket programming logic and the game's business logic is implemented.
+- [Jetpack Compose](https://developer.android.com/jetpack/compose/tutorial) - Jetpack Compose is Android's recommended modern toolkit for building native UI. It simplifies and accelerates UI development on Android. Our whole application's UI is built with jetpack compose.
+- [Module Install Apis](https://developers.google.com/android/guides/module-install-apis) - This is an API provided by Google to ensure different Google API availability with ModuleInstallClient in our android devices. Here in our app, we are ensuring the Google Play's scanner module availability.
+- [Google code Scanner](https://developers.google.com/ml-kit/vision/barcode-scanning/code-scanner) - The Google code scanner API provides a complete solution for scanning code without requiring your app to request camera permission, while preserving user privacy. We have used it to create the QR code scanner at the time of game joining.
+- [Zxing](https://mvnrepository.com/artifact/com.google.zxing/core/3.5.1) - Zxing is an open-source barcode scanning library for Java and Android. Here we have used it to generate the QR at the time game hosting.
 
 ## Screenshots 📷 
 ![light_screenshot](https://github.com/sitamadex11/CovidHelp/blob/develop/Assets/AllScreenShots.png)
@@ -66,16 +43,16 @@ This application is a treasure of all types of covid-resources like bed, oxygen,
 - Click [Here](https://drive.google.com/u/2/uc?id=1OWIi9xcCLTTyZtJHTVzPAjbA3RiiVCal&export=download) to download the latest apk.
 
 ## Requirements 🎯 
-- Android 6.0 and Above
-- Min sdk version 23
+- Android 7.0 and Above
+- Min sdk version 24
 
 ## Permissions 💻
 - Internet
 
 ## Contributing Guideline ✍
-- Before start your contribution please go through our contribution guideline carefully. ([READ](https://github.com/sitamadex11/CovidHelp/blob/develop/Assets/Contributing.md))
-- You need to push your PR on [develop](https://github.com/sitamadex11/CovidHelp/tree/develop) branch only.
-- Join your whatsapp group for further discussion.[CLICK HERE](https://chat.whatsapp.com/JXYziNoD3lD9RWQwD3VyEe) TO JOIN.
+- Before start your contribution please go through our contribution guideline carefully. ([READ](https://github.com/theDIRone/T3/blob/dev/assets/Contributing.md))
+- You need to push your PR on [develop](https://github.com/theDIRone/T3/tree/dev) branch only.
+- Join our whatsapp group for further discussion.[CLICK HERE](https://chat.whatsapp.com/JXYziNoD3lD9RWQwD3VyEe) TO JOIN.
 
 ## 😎Maintainers
 <table>
@@ -92,7 +69,7 @@ This application is a treasure of all types of covid-resources like bed, oxygen,
 ```
 MIT License
 
-Copyright (c) 2021 Sitam Sardar
+Copyright (c) 2023 Sitam Sardar
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
