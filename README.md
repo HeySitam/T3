@@ -1,7 +1,4 @@
- <p align="center">
- <img src="https://github.com/theDIRone/T3/blob/dev/assets/t3.png" height= 500 width = 1200 />
-</p>
-
+![poster](https://github.com/theDIRone/T3/blob/dev/assets/t3.png)
 # T3 🎮
 
 T3 is a multiplayer real-time Tic-Tac-Toe game that uses the Socket Programming internally. In simple, this app demonstrates a real-world application of socket programming in Kotlin without using any external server.
