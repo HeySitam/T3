@@ -54,7 +54,7 @@ T3 is a multiplayer real-time Tic-Tac-Toe game that uses the Socket Programming 
 ## 😎Maintainers
 <table>
   <tbody><tr>
-    <td align="center"><a href="https://github.com/theDIRone"><img alt="" src="https://avatars.githubusercontent.com/theDIRone" width="200px;"><br><sub><b> Sitam Sardar </b></sub></a><br></td> </a></td>
+    <td align="center"><a href="https://github.com/HeySitam"><img alt="" src="https://avatars.githubusercontent.com/HeySitam" width="200px;"><br><sub><b> Sitam Sardar </b></sub></a><br></td> </a></td>
 
      
     
