@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.thedirone.multiplayer_tic_tac_toe'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.thedirone.multiplayer_tic_tac_toe"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
