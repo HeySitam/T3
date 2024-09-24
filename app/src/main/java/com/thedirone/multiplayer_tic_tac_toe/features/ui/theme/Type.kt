@@ -1,4 +1,4 @@
-package com.thedirone.multiplayer_tic_tac_toe.ui.theme
+package com.thedirone.multiplayer_tic_tac_toe.features.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
