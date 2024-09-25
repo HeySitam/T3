@@ -20,7 +20,7 @@ T3 is a multiplayer real-time Tic-Tac-Toe game that uses the Socket Programming 
 * To enjoy this game you need connect to a common wifi connection.
 
 * **Host Game** 🧩
-> Here as a player, you can host the game. After clicking on the "Host Game" button a QR will appear. Internally if you are hosting the game, it means your device now becomes a server and waiting for a client to join so that the socket connection can be established.
+> Here as a player, you can host the game. After clicking on the "Host Game" button a QR will appear. Internally, if you are hosting the game, it means your device becomes a server and waiting for a client to join to establish the socket connection.
 
 * **Join Game** 👥
 >  Here as a player, you can join a hosted game. After clicking on the "Join Game" button a QR SCanner will appear. Now you need to scan any host's QR from your app. Internally if you are joining the game, it means your device now becomes a client which is joining to a SocketServer so that the socket connection can be established.
