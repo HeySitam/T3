@@ -36,8 +36,8 @@ T3 is a multiplayer real-time Tic-Tac-Toe game that uses the Socket Programming 
 ## Screenshots 📷 
 ![light_screenshot](https://github.com/theDIRone/T3/blob/dev/assets/all_grid.png)
 
-## Download 📥
-- Click [Here](https://drive.google.com/u/2/uc?id=11T21yw4XEM86NQcavzTloqOzt7qo2lOF&export=download) to download the latest apk.
+## Download from PlayStore 📥
+- Click [Here](https://play.google.com/store/apps/details?id=com.thedirone.multiplayer_tic_tac_toe) to download the latest apk.
 
 ## Requirements 🎯 
 - Android 7.0 and Above
